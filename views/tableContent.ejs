@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Table Content</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Table: <%= tableName %></h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <% for(let column in tableData[0]) { %>
+            <th><%= column %></th>
+          <% } %>
+        </tr>
+      </thead>
+      <tbody>
+        <% for(let i = 0; i < tableData.length; i++) { %>
+          <tr>
+            <% for(let column in tableData[i]) { %>
+              <td><%= tableData[i][column] %></td>
+            <% } %>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
