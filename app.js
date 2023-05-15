@@ -12,11 +12,11 @@ app.get('/tableList', (req, res) => {
   db.any("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'")
     .then(data => {
       const tableList = data.map(row => row.table_name);
-      res.render('tableList', { tableList });
+      res.json(tableList); // Return JSON response
     })
     .catch(error => {
-      console.error('Błąd pobierania listy tabel:', error);
-      res.status(500).send('Wystąpił błąd serwera');
+      console.error('Error retrieving table list:', error);
+      res.status(500).send('An error occurred');
     });
 });
 
