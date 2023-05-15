@@ -35,7 +35,7 @@ app.get('/tableContent', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/home.html');
+  res.sendFile(__dirname + '/views/home.html');
 });
 
 app.listen(port, () => {
