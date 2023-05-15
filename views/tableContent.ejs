@@ -13,6 +13,7 @@
           <% for(let column in tableData[0]) { %>
             <th><%= column %></th>
           <% } %>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -21,12 +22,148 @@
             <% for(let column in tableData[i]) { %>
               <td><%= tableData[i][column] %></td>
             <% } %>
+            <td>
+              <button type="button" class="btn btn-primary btn-edit" data-id="<%= tableData[i].id %>">Edit</button>
+              <button type="button" class="btn btn-danger btn-delete" data-id="<%= tableData[i].id %>">Delete</button>
+            </td>
           </tr>
         <% } %>
       </tbody>
     </table>
+    <button type="button" class="btn btn-success btn-add">Add Record</button>
   </div>
+  <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="form-record">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-form-label">Add Record</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="input-field-1">Field 1</label>
+              <input type="text" class="form-control" id="input-field-1" name="field_1" required>
+            </div>
+            <div class="form-group">
+              <label for="input-field-2">Field 2</label>
+              <input type="text" class="form-control" id="input-field-2" name="field_2" required>
+            </div>
+            <div class="form-group">
+              <label for="input-field-3">Field 3</label>
+              <input type="text" class="form-control" id="input-field-3" name="field_3" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    function populateTable() {
+      $.ajax({
+        url: '/api/records',
+        method: 'GET',
+        success: function(data) {
+          $('tbody').empty();
+          
+          data.forEach(function(record) {
+            var row = $('<tr>');
+            for (var key in record) {
+              if (record.hasOwnProperty(key)) {
+                var cell = $('<td>').text(record[key]);
+                row.append(cell);
+              }
+            }
+            row.append('<td><button type="button" class="btn btn-primary btn-edit" data-id="' + record.id + '">Edit</button> <button type="button" class="btn btn-danger btn-delete" data-id="' + record.id + '">Delete</button></td>');
+            $('tbody').append(row);
+          });
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
+    function addRecord(data) {
+      $.ajax({
+        url: '/api/records',
+        method: 'POST',
+        data: data,
+        success: function() {
+          $('#modal-form').modal('hide');
+          populateTable();
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
+    function deleteRecord(id) {
+      $.ajax({
+        url: '/api/records/' + id,
+        method: 'DELETE',
+        success: function() {
+          populateTable();
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
+    function updateRecord(id, data) {
+      $.ajax({
+        url: '/api/records/' + id,
+        method: 'PUT',
+        data: data,
+        success: function() {
+          $('#modal-form').modal('hide');
+          populateTable();
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
+    $(document).ready(function() {
+      populateTable();
+
+      $('.btn-add').click(function() {
+        $('#modal-form').modal('show');
+        $('#form-record').trigger('reset');
+        $('#modal-form-label').text('Add Record');
+      });
+
+      $(document).on('click', '.btn-edit', function() {
+        var id = $(this).data('id');
+        $('#modal-form').modal('show');
+        $('#modal-form-label').text('Edit Record');
+
+        $.ajax({
+          url: '/api/records/' + id,
+          method: 'GET',
+          success: function(data) {
+            $('#input-field-1').val(data.field_1);
+            $('#input-field-2').val(data.field_2);
+            $('#input-field-3').val(data.field_3);
+          },
+          error: function(error) {
+            console.log(error);
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>

@@ -53,6 +53,39 @@ app.post('/executeQuery', (req, res) => {
     });
 });
 
+app.get('/api/records', (req, res) => {
+  res.json(records);
+});
+
+app.post('/api/records', (req, res) => {
+  const newRecord = req.body;
+  records.push(newRecord);
+  res.sendStatus(201); 
+});
+
+app.delete('/api/records/:id', (req, res) => {
+  const id = req.params.id;
+  const index = records.findIndex(record => record.id === id);
+  if (index !== -1) {
+    records.splice(index, 1);
+    res.sendStatus(204); 
+  } else {
+    res.sendStatus(404); 
+  }
+});
+
+app.put('/api/records/:id', (req, res) => {
+  const id = req.params.id;
+  const updatedRecord = req.body;
+  const index = records.findIndex(record => record.id === id);
+  if (index !== -1) {
+    records[index] = { ...records[index], ...updatedRecord };
+    res.sendStatus(204); 
+  } else {
+    res.sendStatus(404);
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
