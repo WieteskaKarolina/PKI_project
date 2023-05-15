@@ -41,15 +41,13 @@ app.get('/', (req, res) => {
 });
 
 app.post('/executeQuery', (req, res) => {
-  const query = req.body.query;
-
-  db.any(query)
-    .then(data => {
-      res.send({ result: data });
+  var query = req.body.query;
+  db.query(query)
+    .then((result) => {
+      res.json({ result: result });
     })
-    .catch(error => {
-      console.error('Błąd wykonania zapytania SQL:', error);
-      res.status(500).send({ error: 'Wystąpił błąd serwera' });
+    .catch((error) => {
+      res.json({ error: error.message });
     });
 });
 
