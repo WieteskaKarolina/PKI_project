@@ -7,27 +7,51 @@
 <body>
   <div class="container">
     <h1>Database Viewer</h1>
-    <form id="databaseForm">
-      <div class="form-group">
-        <label for="databaseName">Database Name:</label>
-        <input type="text" class="form-control" id="databaseName" readonly value="<%= databaseName %>">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#tableTab">Tabela</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#sqlQueryTab">SQL Query</a>
+      </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+      <!-- Tabela Tab -->
+      <div class="tab-pane fade show active" id="tableTab">
+        <form id="databaseForm">
+          <div class="form-group">
+            <label for="databaseName">Nazwa bazy danych:</label>
+            <input type="text" class="form-control" id="databaseName" readonly>
+          </div>
+          <div class="form-group">
+            <label for="tableList">Dostępne tabele:</label>
+            <select class="form-control" id="tableList"></select>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="showTableContent()">Pokaż zawartość tabeli</button>
+        </form>
       </div>
-      <div class="form-group">
-        <label for="tableList">Available Tables:</label>
-        <select class="form-control" id="tableList">
-          <% for(let i = 0; i < tableList.length; i++) { %>
-            <option><%= tableList[i] %></option>
-          <% } %>
-        </select>
+
+      <!-- SQL Query Tab -->
+      <div class="tab-pane fade" id="sqlQueryTab">
+        <form id="sqlQueryForm">
+          <div class="form-group">
+            <label for="sqlQuery">Zapytanie SQL:</label>
+            <textarea class="form-control" id="sqlQuery" rows="5"></textarea>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="sendQuery()">Wyślij zapytanie</button>
+        </form>
       </div>
-      <button type="button" class="btn btn-primary" onclick="showTableContent()">Show Table Content</button>
-    </form>
+    </div>
+
+    <div id="resultContainer" class="mt-5"></div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
     $(document).ready(function() {
+      // Pobieranie nazwy bazy danych
       $.ajax({
         url: "/databaseName",
         success: function(response) {
@@ -35,6 +59,7 @@
         }
       });
 
+      // Pobieranie listy tabel
       $.ajax({
         url: "/tableList",
         success: function(response) {
@@ -52,6 +77,64 @@
       var selectedTable = $("#tableList").val();
       window.location.href = "/tableContent?table=" + selectedTable;
     }
-  </script>
+
+    function sendQuery() {
+      var query = $('#sqlQuery').val();
+      $.ajax({
+          url: "/executeQuery",
+          method: "POST",
+          data: { query: query },
+          success: function(response) {
+            // Clear previous results
+            $('#resultContainer').empty();
+
+            // Check if response contains an error
+            if (response.error) {
+              // Display error message
+              $('#resultContainer').html('<div class="alert alert-danger">' + response.error + '</div>');
+            } else {
+              // Display query result
+              var result = response.result;
+
+              // Check if result is empty
+              if (result.length === 0) {
+                $('#resultContainer').html('<div class="alert alert-info">No records found.</div>');
+              } else {
+                // Create table to display query result
+                var table = $('<table class="table table-bordered">');
+
+                // Create table header
+                var thead = $('<thead>');
+                var headerRow = $('<tr>');
+                var headers = Object.keys(result[0]);
+                for (var i = 0; i < headers.length; i++) {
+                  headerRow.append('<th>' + headers[i] + '</th>');
+                }
+                thead.append(headerRow);
+                table.append(thead);
+
+                // Create table body
+                var tbody = $('<tbody>');
+                for (var j = 0; j < result.length; j++) {
+                  var dataRow = $('<tr>');
+                  for (var k = 0; k < headers.length; k++) {
+                    dataRow.append('<td>' + result[j][headers[k]] + '</td>');
+                  }
+                  tbody.append(dataRow);
+                }
+                table.append(tbody);
+
+                // Append table to result container
+                $('#resultContainer').append(table);
+              }
+            }
+          },
+          error: function(xhr, status, error) {
+            // Display error message
+            $('#resultContainer').html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+          }
+        });
+      }
+</script>
 </body>
 </html>
