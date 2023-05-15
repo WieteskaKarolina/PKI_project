@@ -1,0 +1,32 @@
+-- Tworzenie tabeli "Użytkownicy"
+CREATE TABLE Uzytkownicy (
+  ID SERIAL PRIMARY KEY,
+  Imie VARCHAR(255),
+  Nazwisko VARCHAR(255),
+  Email VARCHAR(255),
+  Haslo VARCHAR(255),
+  Nick VARCHAR(255)
+);
+
+-- Wypełnianie tabeli "Użytkownicy" danymi
+INSERT INTO Uzytkownicy (Imie, Nazwisko, Email, Haslo, Nick) VALUES
+  ('Jan', 'Kowalski', 'jan@example.com', 'haslo123', 'jankow'),
+  ('Anna', 'Nowak', 'anna@example.com', 'abc456', 'annanow'),
+  ('Piotr', 'Wiśniewski', 'piotr@example.com', 'qwerty', 'piotrw');
+
+-- Tworzenie tabeli "Posty"
+CREATE TABLE Posty (
+  ID SERIAL PRIMARY KEY,
+  ID_Uzytkownika INT REFERENCES Uzytkownicy(ID),
+  Tytul VARCHAR(255),
+  Tresc TEXT,
+  DataUtworzenia DATE
+);
+
+-- Wypełnianie tabeli "Posty" danymi
+INSERT INTO Posty (ID_Uzytkownika, Tytul, Tresc, DataUtworzenia) VALUES
+  (1, 'Pierwszy post', 'Witaj wszystkich!', '2023-05-01'),
+  (1, 'Drugi post', 'Dziś jest piękna pogoda.', '2023-05-02'),
+  (2, 'Nowy artykuł', 'Przeczytajcie mój blog.', '2023-05-03'),
+  (3, 'Ciekawe odkrycie', 'Odkryłem coś niesamowitego!', '2023-05-04'),
+  (2, 'Aktualności', 'Najnowsze wieści ze świata.', '2023-05-05');

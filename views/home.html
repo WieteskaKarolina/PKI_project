@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Database Viewer</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Database Viewer</h1>
+    <form id="databaseForm">
+      <div class="form-group">
+        <label for="databaseName">Nazwa bazy danych:</label>
+        <input type="text" class="form-control" id="databaseName" readonly>
+      </div>
+      <div class="form-group">
+        <label for="tableList">Dostępne tabele:</label>
+        <select class="form-control" id="tableList"></select>
+      </div>
+      <button type="button" class="btn btn-primary" onclick="showTableContent()">Pokaż zawartość tabeli</button>
+    </form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $.ajax({
+        url: "/databaseName",
+        success: function(response) {
+          $("#databaseName").val(response);
+        }
+      });
+
+      $.ajax({
+        url: "/tableList",
+        success: function(response) {
+          var tableList = response;
+          var selectOptions = "";
+          for (var i = 0; i < tableList.length; i++) {
+            selectOptions += "<option>" + tableList[i] + "</option>";
+          }
+          $("#tableList").html(selectOptions);
+        }
+      });
+    });
+
+    function showTableContent() {
+      var selectedTable = $("#tableList").val();
+      window.location.href = "/tableContent?table=" + selectedTable;
+    }
+  </script>
+</body>
+</html>
