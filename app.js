@@ -12,7 +12,7 @@ app.get('/tableList', (req, res) => {
   db.any("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'")
     .then(data => {
       const tableList = data.map(row => row.table_name);
-      res.json(tableList); // Return JSON response
+      res.json(tableList); 
     })
     .catch(error => {
       console.error('Error retrieving table list:', error);
@@ -38,6 +38,19 @@ app.get('/', (req, res) => {
     databaseName: "pki_project_db", 
     tableList: [] //zostanie zaktualizowana przez asynchroniczne zapytanie AJAX
   });
+});
+
+app.post('/executeQuery', (req, res) => {
+  const query = req.body.query;
+
+  db.any(query)
+    .then(data => {
+      res.send({ result: data });
+    })
+    .catch(error => {
+      console.error('Błąd wykonania zapytania SQL:', error);
+      res.status(500).send({ error: 'Wystąpił błąd serwera' });
+    });
 });
 
 app.listen(port, () => {
