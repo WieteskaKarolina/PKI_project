@@ -53,6 +53,8 @@ app.post('/executeQuery', (req, res) => {
     });
 });
 
+const records = []; 
+
 app.get('/api/records', (req, res) => {
   res.json(records);
 });
