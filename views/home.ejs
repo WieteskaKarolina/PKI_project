@@ -9,14 +9,18 @@
     <h1>Database Viewer</h1>
     <form id="databaseForm">
       <div class="form-group">
-        <label for="databaseName">Nazwa bazy danych:</label>
-        <input type="text" class="form-control" id="databaseName" readonly>
+        <label for="databaseName">Database Name:</label>
+        <input type="text" class="form-control" id="databaseName" readonly value="<%= databaseName %>">
       </div>
       <div class="form-group">
-        <label for="tableList">Dostępne tabele:</label>
-        <select class="form-control" id="tableList"></select>
+        <label for="tableList">Available Tables:</label>
+        <select class="form-control" id="tableList">
+          <% for(let i = 0; i < tableList.length; i++) { %>
+            <option><%= tableList[i] %></option>
+          <% } %>
+        </select>
       </div>
-      <button type="button" class="btn btn-primary" onclick="showTableContent()">Pokaż zawartość tabeli</button>
+      <button type="button" class="btn btn-primary" onclick="showTableContent()">Show Table Content</button>
     </form>
   </div>
 

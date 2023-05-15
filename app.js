@@ -5,7 +5,6 @@ const port = 3000;
 const pgp = require('pg-promise')();
 const db = pgp(process.env.DATABASE_URL);
 
-// Konfiguracja EJS
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
@@ -35,7 +34,10 @@ app.get('/tableContent', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/home.html');
+  res.render('home', {
+    databaseName: "pki_project_db", 
+    tableList: [] //zostanie zaktualizowana przez asynchroniczne zapytanie AJAX
+  });
 });
 
 app.listen(port, () => {
