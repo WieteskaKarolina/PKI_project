@@ -1,10 +1,12 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const port = 3000;
 
 const pgp = require('pg-promise')();
 const db = pgp(process.env.DATABASE_URL);
 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
