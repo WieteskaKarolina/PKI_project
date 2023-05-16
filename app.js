@@ -58,7 +58,7 @@ app.post('/api/users', (req, res) => {
   const newUser = req.body;
   db.one('INSERT INTO Users (FirstName, LastName, Email, Password, Nickname) VALUES ($1, $2, $3, $4, $5) RETURNING ID', [newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password, newUser.Nickname])
     .then(result => {
-      res.status(201).json({ id: result.id });
+      res.status(201).json({ id: result.ID });
     })
     .catch(error => {
       console.error('Error creating user:', error);
@@ -108,7 +108,6 @@ app.delete('/api/users/:id', (req, res) => {
       res.status(500).send('An error occurred');
     });
 });
-
 app.put('/api/users/:id', (req, res) => {
   const id = req.params.id;
   const updatedUser = req.body;
