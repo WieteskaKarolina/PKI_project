@@ -149,7 +149,7 @@ app.get('/api/posts', (req, res) => {
     db.any('SELECT ID, FirstName FROM Users')
   ])
     .then(([posts, users]) => {
-      res.json({ tableData: posts, users: users });
+      res.json({ posts: posts, users: users });
     })
     .catch(error => {
       console.error('Error retrieving table content:', error);
