@@ -56,7 +56,7 @@ app.post('/executeQuery', (req, res) => {
 
 app.post('/api/users', (req, res) => {
   const newUser = req.body;
-  db.one('INSERT INTO Users (FirstName, LastName, Email, Password, Nickname) VALUES ($1, $2, $3, $4, $5) RETURNING ID', [newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password, newUser.Nickname])
+  db.one('INSERT INTO Users (firstname, lastname, email, password, nickname) VALUES ($1, $2, $3, $4, $5) RETURNING ID', [newUser.firstname, newUser.lastname, newUser.email, newUser.password, newUser.nickname])
     .then(result => {
       res.status(201).json({ id: result.ID });
     })
@@ -111,7 +111,7 @@ app.delete('/api/users/:id', (req, res) => {
 app.put('/api/users/:id', (req, res) => {
   const id = req.params.id;
   const updatedUser = req.body;
-  db.result('UPDATE Users SET FirstName = $1, LastName = $2, Email = $3, Password = $4, Nickname = $5 WHERE ID = $6', [updatedUser.FirstName, updatedUser.LastName, updatedUser.Email, updatedUser.Password, updatedUser.Nickname, id])
+  db.result('UPDATE Users SET firstname = $1, lastname = $2, email = $3, password = $4, nickname = $5 WHERE ID = $6', [updatedUser.firstname, updatedUser.lastname, updatedUser.email, updatedUser.password, updatedUser.nickname, id])
     .then(result => {
       if (result.rowCount === 1) {
         res.sendStatus(204);
