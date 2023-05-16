@@ -36,7 +36,7 @@ app.get('/tableContent', (req, res) => {
       });
   } else if (tableName === 'posts') {
     Promise.all([
-      db.any('SELECT * FROM Posts'),
+      db.any('SELECT Posts.*, Users.FirstName FROM Posts JOIN Users ON Posts.User_ID = Users.ID'),
       db.any('SELECT ID, FirstName FROM Users')
     ])
       .then(([posts, users]) => {
@@ -145,7 +145,7 @@ app.put('/api/users/:id', (req, res) => {
 // GET all posts
 app.get('/api/posts', (req, res) => {
   Promise.all([
-    db.any('SELECT * FROM Posts'),
+    db.any('SELECT Posts.*, Users.FirstName FROM Posts JOIN Users ON Posts.User_ID = Users.ID'),
     db.any('SELECT ID, FirstName FROM Users')
   ])
     .then(([posts, users]) => {
@@ -156,6 +156,7 @@ app.get('/api/posts', (req, res) => {
       res.status(500).send('An error occurred');
     });
 });
+
 
 
 // GET a specific post by ID
