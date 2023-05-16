@@ -3,6 +3,8 @@
 <head>
   <title>Table Content</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
 </head>
 <body>
   <div class="container">
@@ -58,9 +60,9 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="input-date">Date</label>
-              <input type="text" class="form-control" id="input-date" name="date" required>
-            </div>
+                <label for="input-date">Date</label>
+                <input type="text" class="form-control datepicker" id="input-date" name="date" required>
+              </div>              
             <div class="form-group">
               <label for="input-content">Content</label>
               <textarea class="form-control" id="input-content" name="content" required></textarea>
@@ -78,6 +80,8 @@
               </div>
               <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
               <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
               <script>
                 function populateTable() {
                 $.ajax({
@@ -168,9 +172,13 @@ $(document).ready(function() {
         $('#input-author').val(data.author);
         $('#input-date').val(data.date);
         $('#input-content').val(data.content);
+
         // Update the form action URL
         $('#form-record').attr('action', '/api/posts/' + id);
-      },
+        
+        // Set the date picker value
+        $('.datepicker').datepicker('setDate', data.date);
+        },
       error: function(error) {
         console.log(error);
       }
@@ -207,6 +215,11 @@ $(document).ready(function() {
       deleteRecord(id);
     }
   });
+
+  $('.datepicker').datepicker({
+  format: 'yyyy-mm-dd',
+  autoclose: true,
+});
 });
 </script>
 </body>
