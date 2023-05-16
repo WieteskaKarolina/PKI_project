@@ -159,33 +159,34 @@ $(document).ready(function() {
   });
 
   $(document).on('click', '.btn-edit', function() {
-    var id = $(this).data('id');
-    $('#modal-form').modal('show');
-    $('#modal-form-label').text('Edit User');
+  var id = $(this).data('id');
+  $('#modal-form').modal('show');
+  $('#modal-form-label').text('Edit User');
 
-    $.ajax({
-      url: '/api/users/' + id,
-      method: 'GET',
-      success: function(data) {
-        $('#input-firstname').val(data.firstname);
-        $('#input-lastname').val(data.lastname);
-        $('#input-email').val(data.email);
-        $('#input-password').val(data.password);
-        $('#input-nickname').val(data.nickname);
-        // Update the form action URL
-        $('#form-record').attr('action', '/api/users/' + id);
-      },
-      error: function(error) {
-        console.log(error);
-      }
-    });
+  $.ajax({
+    url: '/api/users/' + id,
+    method: 'GET',
+    success: function(data) {
+      $('#input-record-id').val(id); // Update the hidden input field with the ID
+      $('#input-firstname').val(data.firstname);
+      $('#input-lastname').val(data.lastname);
+      $('#input-email').val(data.email);
+      $('#input-password').val(data.password);
+      $('#input-nickname').val(data.nickname);
+      // Update the form action URL
+      $('#form-record').attr('action', '/api/users/' + id);
+    },
+    error: function(error) {
+      console.log(error);
+    }
   });
+});
+
 
   // Add event handler for form submission
   $('#form-record').submit(function(event) {
     event.preventDefault();
-    console.log($('#input-record-id').val())
-    console.log($('#input-firstname').val())
+   
     var id = $('#input-record-id').val();
     var data = {
       firstname: $('#input-firstname').val(),
@@ -194,7 +195,7 @@ $(document).ready(function() {
       password: $('#input-password').val(),
       nickname: $('#input-nickname').val()
       };
-      console.log(id)
+     
       if (id) {
         // Update existing record
         updateRecord(id, data);
