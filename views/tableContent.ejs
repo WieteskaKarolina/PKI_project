@@ -6,25 +6,29 @@
 </head>
 <body>
   <div class="container">
-    <h1>Table: <%= tableName %></h1>
+    <h1>Table: Users</h1>
     <table class="table table-striped">
       <thead>
         <tr>
-          <% for (let column in tableData[0]) { %>
-            <th><%= column %></th>
-          <% } %>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Password</th>
+          <th>Nickname</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <% for (let i = 0; i < tableData.length; i++) { %>
           <tr>
-            <% for (let column in tableData[i]) { %>
-              <td><%= tableData[i][column] %></td>
-            <% } %>
+            <td><%= tableData[i].firstname %></td>
+            <td><%= tableData[i].lastname %></td>
+            <td><%= tableData[i].email %></td>
+            <td><%= tableData[i].password %></td>
+            <td><%= tableData[i].nickname %></td>
             <td>
-              <button type="button" class="btn btn-primary btn-edit" data-id="<%= tableData[i].ID %>">Edit</button>
-              <button type="button" class="btn btn-danger btn-delete" data-id="<%= tableData[i].ID %>">Delete</button>
+              <button type="button" class="btn btn-primary btn-edit" data-id="<%= tableData[i].id %>">Edit</button>
+              <button type="button" class="btn btn-danger btn-delete" data-id="<%= tableData[i].id %>">Delete</button>
             </td>
           </tr>
         <% } %>
@@ -43,10 +47,30 @@
             </button>
           </div>
           <div class="modal-body">
-            <!-- Add the input fields for the record fields of the respective table -->
+            <div class="form-group">
+              <label for="input-firstname">First Name</label>
+              <input type="text" class="form-control" id="input-firstname" name="firstname" required>
+            </div>
+            <div class="form-group">
+              <label for="input-lastname">Last Name</label>
+              <input type="text" class="form-control" id="input-lastname" name="lastname" required>
+            </div>
+            <div class="form-group">
+              <label for="input-email">Email</label>
+              <input type="email" class="form-control" id="input-email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="input-password">Password</label>
+              <input type="password" class="form-control" id="input-password" name="password" required>
+            </div>
+            <div class="form-group">
+              <label for="input-nickname">Nickname</label>
+              <input type="text" class="form-control" id="input-nickname" name="nickname" required>
+            </div>
           </div>
           <div class="modal-footer">
-            <input type="hidden" id="input-record-id" name="record_id">
+           
+            <input type="hidden" id="input-record-id" name="id">
             <button type="submit" class="btn btn-primary">Save</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
@@ -54,119 +78,130 @@
       </div>
     </div>
   </div>
-
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
     function populateTable() {
       $.ajax({
-        url: '/api/users', // Change the URL to '/api/users' for the "Users" table
+        url: '/api/users',
         method: 'GET',
         success: function(data) {
           $('tbody').empty();
 
           data.forEach(function(record) {
             var row = $('<tr>');
-            for (var key in record) {
-              if (record.hasOwnProperty(key) && key !== 'ID') {
-                var cell = $('<td>').text(record[key]);
-                row.append(cell);
-              }
-            }
-            row.append('<td><button type="button" class="btn btn-primary btn-edit" data-id="' + record.ID + '">Edit</button> <button type="button" class="btn btn-danger btn-delete" data-id="' + record.ID + '">Delete</button></td>');
+            row.append('<td>' + record.firstname + '</td>');
+            row.append('<td>' + record.lastname + '</td>');
+            row.append('<td>' + record.email + '</td>');
+            row.append('<td>' + record.password + '</td>');
+            row.append('<td>' + record.nickname + '</td>');
+            row.append('<td><button type="button" class="btn btn-primary btn-edit" data-id="' + record.id + '">Edit</button> <button type="button" class="btn btn-danger btn-delete" data-id="' + record.id + '">Delete</button></td>');
             $('tbody').append(row);
-            });
-            },
-            error: function(error) {
+          });
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
+    function addRecord(data) {
+      $.ajax({
+        url: '/api/users',
+        method: 'POST',
+        data: data,
+        success: function() {
+          $('#modal-form').modal('hide');
+          populateTable();
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
+    function deleteRecord(id) {
+      $.ajax({
+        url: '/api/users/' + id,
+        method: 'DELETE',
+        success: function() {
+          populateTable();
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
+    function updateRecord(id, data) {
+      $.ajax({
+        url: '/api/users/' + id,
+        method: 'PUT',
+        data: data,
+        success: function() {
+          $('#modal-form').modal('hide');
+          populateTable();
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
+    $(document).ready(function() {
+      populateTable();
+
+      $('.btn-add').click(function() {
+        $('#modal-form').modal('show');
+        $('#form-record').trigger('reset');
+        $('#modal-form-label').text('Add Record');
+        $('#input-record-id').val('');
+      });
+
+      $(document).on('click', '.btn-edit', function() {
+        var id = $(this).data('id');
+        $('#modal-form').modal('show');
+        $('#modal-form-label').text('Edit Record');
+        $('#input-record-id').val(id);
+
+        // Fetch the record data using AJAX and populate the form fields
+        $.ajax({
+          url: '/api/users/' + id,
+          method: 'GET',
+          success: function(data) {
+            $('#input-firstname').val(data.firstname);
+            $('#input-lastname').val(data.lastname);
+            $('#input-email').val(data.email);
+            $('#input-password').val(data.password);
+            $('#input-nickname').val(data.nickname);
+          },
+          error: function(error) {
             console.log(error);
-            }
-            });
-}
-function addRecord(data) {
-  $.ajax({
-    url: '/api/users', // Change the URL to '/api/users' for the "Users" table
-    method: 'POST',
-    data: data,
-    success: function() {
-      $('#modal-form').modal('hide');
-      populateTable();
-    },
-    error: function(error) {
-      console.log(error);
-    }
-  });
-}
+          }
+        });
+      });
 
-function deleteRecord(id) {
-  $.ajax({
-    url: '/api/users/' + id, // Change the URL to '/api/users/' + id for the "Users" table
-    method: 'DELETE',
-    success: function() {
-      populateTable();
-    },
-    error: function(error) {
-      console.log(error);
-    }
-  });
-}
-
-function updateRecord(id, data) {
-  $.ajax({
-    url: '/api/users/' + id, // Change the URL to '/api/users/' + id for the "Users" table
-    method: 'PUT',
-    data: data,
-    success: function() {
-      $('#modal-form').modal('hide');
-      populateTable();
-    },
-    error: function(error) {
-      console.log(error);
-    }
-  });
-}
-
-$(document).ready(function() {
-  populateTable();
-
-  $('.btn-add').click(function() {
-    $('#modal-form').modal('show');
-    $('#form-record').trigger('reset');
-    $('#modal-form-label').text('Add Record');
-    $('#input-record-id').val('');
-  });
-
-  $(document).on('click', '.btn-edit', function() {
-    var id = $(this).data('id');
-    $('#modal-form').modal('show');
-    $('#modal-form-label').text('Edit Record');
-    $('#input-record-id').val(id);
-
-    $.ajax({
-      url: '/api/users/' + id, // Change the URL to '/api/users/' + id for the "Users" table
-      method: 'GET',
-      success: function(data) {
-        // Set the input field values for the respective record fields
-      },
-      error: function(error) {
-        console.log(error);
-      }
-    });
-  });
-
-  // Add event handler for form submission
-  $('#form-record').submit(function(event) {
-    event.preventDefault();
-    var formData = $(this).serialize();
-    var id = $('#input-record-id').val();
-
-    if (id) {
-      updateRecord(id, formData);
+      // Add event handler for form submission
+      $('#form-record').submit(function(event)
+{
+event.preventDefault();
+var id = $('#input-record-id').val();
+var data = {
+firstname: $('#input-firstname').val(),
+lastname: $('#input-lastname').val(),
+email: $('#input-email').val(),
+password: $('#input-password').val(),
+nickname: $('#input-nickname').val()
+};
+if (id) {
+      // Update existing record
+      updateRecord(id, data);
     } else {
-      addRecord(formData);
+      // Add new record
+      addRecord(data);
     }
   });
 
-  // Add event handler for record deletion
   $(document).on('click', '.btn-delete', function() {
     var id = $(this).data('id');
     deleteRecord(id);

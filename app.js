@@ -53,6 +53,19 @@ app.post('/executeQuery', (req, res) => {
     });
 });
 
+
+app.post('/api/users', (req, res) => {
+  const newUser = req.body;
+  db.one('INSERT INTO Users (FirstName, LastName, Email, Password, Nickname) VALUES ($1, $2, $3, $4, $5) RETURNING ID', [newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password, newUser.Nickname])
+    .then(result => {
+      res.status(201).json({ id: result.id });
+    })
+    .catch(error => {
+      console.error('Error creating user:', error);
+      res.status(500).send('An error occurred');
+    });
+});
+
 app.get('/api/users', (req, res) => {
   db.any('SELECT * FROM Users')
     .then(data => {
@@ -64,73 +77,39 @@ app.get('/api/users', (req, res) => {
     });
 });
 
-app.post('/api/users', (req, res) => {
-  const newUser = req.body;
-  db.one('INSERT INTO Users (FirstName, LastName, Email, Password, Nickname) VALUES ($1, $2, $3, $4, $5) RETURNING ID', [newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password, newUser.Nickname])
+app.delete('/api/users/:id', (req, res) => {
+  const id = req.params.id;
+  db.result('DELETE FROM Users WHERE ID = $1', id)
     .then(result => {
-      res.status(201).json({ id: result.ID });
+      if (result.rowCount === 1) {
+        res.sendStatus(204);
+      } else {
+        res.sendStatus(404);
+      }
     })
     .catch(error => {
-      console.error('Error creating user:', error);
+      console.error('Error deleting user:', error);
       res.status(500).send('An error occurred');
     });
 });
 
-app.get('/api/posts', (req, res) => {
-  db.any('SELECT * FROM Posts')
-    .then(data => {
-      res.json(data);
+app.put('/api/users/:id', (req, res) => {
+  const id = req.params.id;
+  const updatedUser = req.body;
+  db.result('UPDATE Users SET FirstName = $1, LastName = $2, Email = $3, Password = $4, Nickname = $5 WHERE ID = $6', [updatedUser.FirstName, updatedUser.LastName, updatedUser.Email, updatedUser.Password, updatedUser.Nickname, id])
+    .then(result => {
+      if (result.rowCount === 1) {
+        res.sendStatus(204);
+      } else {
+        res.sendStatus(404);
+      }
     })
     .catch(error => {
-      console.error('Error retrieving posts:', error);
+      console.error('Error updating user:', error);
       res.status(500).send('An error occurred');
     });
 });
 
-app.post('/api/posts', (req, res) => {
-  const newPost = req.body;
-  db.one('INSERT INTO Posts (User_ID, Title, Content, CreationDate) VALUES ($1, $2, $3, $4) RETURNING ID', [newPost.User_ID, newPost.Title, newPost.Content, newPost.CreationDate])
-    .then(result => {
-      res.status(201).json({ id: result.ID });
-    })
-  .catch(error => {
-      console.error('Error creating post:', error);
-      res.status(500).send('An error occurred');
-    });
-});
-    
-app.delete('/api/posts/:id', (req, res) => {
-    const id = req.params.id;
-    db.result('DELETE FROM Posts WHERE ID = $1', id)
-    .then(result => {
-    if (result.rowCount === 1) {
-      res.sendStatus(204);
-    } else {
-      res.sendStatus(404);
-    }
-    })
-    .catch(error => {
-      console.error('Error deleting post:', error);
-      res.status(500).send('An error occurred');
-    });
-});
-      
-app.put('/api/posts/:id', (req, res) => {
-    const id = req.params.id;
-    const updatedPost = req.body;
-    db.result('UPDATE Posts SET User_ID = $1, Title = $2, Content = $3, CreationDate = $4 WHERE ID = $5', [updatedPost.User_ID, updatedPost.Title, updatedPost.Content, updatedPost.CreationDate, id])
-    .then(result => {
-    if (result.rowCount === 1) {
-      res.sendStatus(204);
-    } else {
-      res.sendStatus(404);
-    }
-    })
-    .catch(error => {
-      console.error('Error updating post:', error);
-      res.status(500).send('An error occurred');
-    });
-});
       
 app.listen(port, () => {
       console.log(`Example app listening on port ${port}`);
