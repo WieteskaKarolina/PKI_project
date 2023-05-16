@@ -27,7 +27,7 @@ app.get('/tableContent', (req, res) => {
 
   db.any(`SELECT * FROM ${tableName}`)
     .then(data => {
-      if(tableName === 'Users'){
+      if(tableName === 'users'){
         res.render('tableContentUsers', { tableName, tableData: data });
       }
       else{
@@ -159,7 +159,7 @@ app.get('/api/posts/:id', (req, res) => {
 // POST a new post
 app.post('/api/posts', (req, res) => {
   const newPost = req.body;
-  db.one('INSERT INTO Posts (User_ID, Title, Content, CreationDate) VALUES ($1, $2, $3, $4) RETURNING ID', [newPost.User_ID, newPost.Title, newPost.Content, newPost.CreationDate])
+  db.one('INSERT INTO Posts (User_ID, Title, Content, CreationDate) VALUES ($1, $2, $3, $4) RETURNING ID', [newPost.author, newPost.title, newPost.content, newPost.date])
     .then(result => {
       res.status(201).json({ id: result.ID });
     })
@@ -173,7 +173,7 @@ app.post('/api/posts', (req, res) => {
 app.put('/api/posts/:id', (req, res) => {
   const id = req.params.id;
   const updatedPost = req.body;
-  db.result('UPDATE Posts SET User_ID = $1, Title = $2, Content = $3, CreationDate = $4 WHERE ID = $5', [updatedPost.User_ID, updatedPost.Title, updatedPost.Content, updatedPost.CreationDate, id])
+  db.result('UPDATE Posts SET User_ID = $1, Title = $2, Content = $3, CreationDate = $4 WHERE ID = $5', [updatedPost.author, updatedPost.title, updatedPost.content, updatedPost.date, id])
     .then(result => {
       if (result.rowCount === 1) {
         res.sendStatus(204);
