@@ -25,21 +25,32 @@ app.get('/tableList', (req, res) => {
 app.get('/tableContent', (req, res) => {
   const tableName = req.query.table;
 
-  db.any(`SELECT * FROM ${tableName}`)
-    .then(data => {
-      if(tableName === 'users'){
+  if (tableName === 'users') {
+    db.any('SELECT * FROM Users')
+      .then(data => {
         res.render('tableContentUsers', { tableName, tableData: data });
-      }
-      else{
-        res.render('tableContentPosts', { tableName, tableData: data });
-      }
-      
-    })
-    .catch(error => {
-      console.error('Error retrieving table content:', error);
-      res.status(500).send('An error occurred');
-    });
+      })
+      .catch(error => {
+        console.error('Error retrieving table content:', error);
+        res.status(500).send('An error occurred');
+      });
+  } else if (tableName === 'posts') {
+    Promise.all([
+      db.any('SELECT * FROM Posts'),
+      db.any('SELECT ID, FirstName FROM Users')
+    ])
+      .then(([posts, users]) => {
+        res.render('tableContentPosts', { tableName, posts, users });
+      })
+      .catch(error => {
+        console.error('Error retrieving table content:', error);
+        res.status(500).send('An error occurred');
+      });
+  } else {
+    res.status(404).send('Table not found');
+  }
 });
+
 
 app.get('/', (req, res) => {
   res.render('home', {
