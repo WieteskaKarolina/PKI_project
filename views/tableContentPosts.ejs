@@ -175,14 +175,14 @@ $(document).ready(function() {
         $('#input-record-id').val(id); // Update the hidden input field with the ID
         $('#input-title').val(data.title);
         $('#input-author').val(data.firstname);
-        $('#input-date').val(data.date);
+        $('#input-date').val(data.creationdate);
         $('#input-content').val(data.content);
 
         // Update the form action URL
         $('#form-record').attr('action', '/api/posts/' + id);
         
         // Set the date picker value
-        $('.datepicker').datepicker('setDate', data.date);
+        $('.datepicker').datepicker('setDate', data.creationdate);
         },
       error: function(error) {
         console.log(error);
