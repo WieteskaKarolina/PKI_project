@@ -147,6 +147,7 @@ function updateRecord(id, data) {
   });
 }
 
+
 $(document).ready(function() {
   populateTable();
 
@@ -156,6 +157,11 @@ $(document).ready(function() {
     $('#modal-form-label').text('Add Record');
     $('#input-record-id').val('');
   });
+
+  $('.datepicker').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+    });
 
   $(document).on('click', '.btn-edit', function() {
     var id = $(this).data('id');
@@ -168,7 +174,7 @@ $(document).ready(function() {
       success: function(data) {
         $('#input-record-id').val(id); // Update the hidden input field with the ID
         $('#input-title').val(data.title);
-        $('#input-author').val(data.author);
+        $('#input-author').val(data.firstname);
         $('#input-date').val(data.date);
         $('#input-content').val(data.content);
 
@@ -215,10 +221,7 @@ $(document).ready(function() {
     }
   });
 
-  $('.datepicker').datepicker({
-  format: 'yyyy-mm-dd',
-  autoclose: true,
-});
+
 });
 </script>
 </body>
