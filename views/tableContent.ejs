@@ -184,6 +184,8 @@ $(document).ready(function() {
   // Add event handler for form submission
   $('#form-record').submit(function(event) {
     event.preventDefault();
+    console.log($('#input-record-id').val())
+    console.log($('#input-firstname').val())
     var id = $('#input-record-id').val();
     var data = {
       firstname: $('#input-firstname').val(),
@@ -192,6 +194,7 @@ $(document).ready(function() {
       password: $('#input-password').val(),
       nickname: $('#input-nickname').val()
       };
+      console.log(id)
       if (id) {
         // Update existing record
         updateRecord(id, data);
