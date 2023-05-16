@@ -133,15 +133,19 @@ app.put('/api/users/:id', (req, res) => {
 
 // GET all posts
 app.get('/api/posts', (req, res) => {
-  db.any('SELECT * FROM Posts')
-    .then(posts => {
-      res.json(posts);
+  Promise.all([
+    db.any('SELECT * FROM Posts'),
+    db.any('SELECT ID, FirstName FROM Users')
+  ])
+    .then(([posts, users]) => {
+      res.render('tableContentPosts', { posts: posts, users: users });
     })
     .catch(error => {
       console.error('Error retrieving posts:', error);
       res.status(500).send('An error occurred');
     });
 });
+
 
 // GET a specific post by ID
 app.get('/api/posts/:id', (req, res) => {
