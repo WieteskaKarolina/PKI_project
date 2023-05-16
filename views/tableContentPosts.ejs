@@ -78,33 +78,32 @@
             </div>
             
               </div>
-              <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-              <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-              <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
-              <script>
-                function populateTable() {
-                $.ajax({
-                    url: '/api/posts',
-                    method: 'GET',
-                    success: function(data) {
-                    $('tbody').empty();
-                    data.forEach(function(record) {
-                        var row = $('<tr>');
-                        row.append('<td>' + record.title + '</td>');
-                        row.append('<td>' + record.firstname + '</td>');
-                        row.append('<td>' + record.creationdate + '</td>');
-                        row.append('<td>' + record.content + '</td>');
-                        row.append('<td><button type="button" class="btn btn-primary btn-edit" data-id="' + record.id + '">Edit</button> <button type="button" class="btn btn-danger btn-delete" data-id="' + record.id + '">Delete</button></td>');
-                        $('tbody').append(row);
-                    });
+<script>
+function populateTable() {
+  $.ajax({
+    url: '/api/posts',
+    method: 'GET',
+    success: function(data) {
+      $('tbody').empty();
+      data.posts.forEach(function(record) {
+        var row = $('<tr>');
+        row.append('<td>' + record.title + '</td>');
+        row.append('<td>' + record.firstname + '</td>');
+        row.append('<td>' + record.creationdate + '</td>');
+        row.append('<td>' + record.content + '</td>');
+        row.append('<td><button type="button" class="btn btn-primary btn-edit" data-id="' + record.id + '">Edit</button> <button type="button" class="btn btn-danger btn-delete" data-id="' + record.id + '">Delete</button></td>');
+        $('tbody').append(row);
+      });
     },
     error: function(error) {
       console.log(error);
     }
   });
 }
-
 function addRecord(data) {
   $.ajax({
     url: '/api/posts',

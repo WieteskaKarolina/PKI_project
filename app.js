@@ -142,7 +142,6 @@ app.put('/api/users/:id', (req, res) => {
     });
 });
 
-// GET all posts
 app.get('/api/posts', (req, res) => {
   Promise.all([
     db.any('SELECT Posts.*, Users.FirstName FROM Posts JOIN Users ON Posts.User_ID = Users.ID'),
