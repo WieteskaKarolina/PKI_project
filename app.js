@@ -40,7 +40,7 @@ app.get('/tableContent', (req, res) => {
       db.any('SELECT ID, FirstName FROM Users')
     ])
       .then(([posts, users]) => {
-        res.render('tableContentPosts', { tableName, posts, users });
+        res.render('tableContentPosts', { tableName, tableData: posts, users });
       })
       .catch(error => {
         console.error('Error retrieving table content:', error);
@@ -149,7 +149,7 @@ app.get('/api/posts', (req, res) => {
     db.any('SELECT ID, FirstName FROM Users')
   ])
     .then(([posts, users]) => {
-      res.render('tableContentPosts', { posts: posts, users: users });
+      res.render('tableContentPosts', { tableData: posts, users: users });
     })
     .catch(error => {
       console.error('Error retrieving posts:', error);
