@@ -30,20 +30,20 @@ app.get('/tableContent', (req, res) => {
       res.render('tableContent', { tableName, tableData: data });
     })
     .catch(error => {
-      console.error('Błąd pobierania zawartości tabeli:', error);
-      res.status(500).send('Wystąpił błąd serwera');
+      console.error('Error retrieving table content:', error);
+      res.status(500).send('An error occurred');
     });
 });
 
 app.get('/', (req, res) => {
   res.render('home', {
     databaseName: "pki_project_db", 
-    tableList: [] //zostanie zaktualizowana przez asynchroniczne zapytanie AJAX
+    tableList: [] // Will be updated by asynchronous AJAX request
   });
 });
 
 app.post('/executeQuery', (req, res) => {
-  var query = req.body.query;
+  const query = req.body.query;
   db.query(query)
     .then((result) => {
       res.json({ result: result });
@@ -53,41 +53,85 @@ app.post('/executeQuery', (req, res) => {
     });
 });
 
-const records = []; 
-
-app.get('/api/records', (req, res) => {
-  res.json(records);
+app.get('/api/users', (req, res) => {
+  db.any('SELECT * FROM Users')
+    .then(data => {
+      res.json(data);
+    })
+    .catch(error => {
+      console.error('Error retrieving users:', error);
+      res.status(500).send('An error occurred');
+    });
 });
 
-app.post('/api/records', (req, res) => {
-  const newRecord = req.body;
-  records.push(newRecord);
-  res.sendStatus(201); 
+app.post('/api/users', (req, res) => {
+  const newUser = req.body;
+  db.one('INSERT INTO Users (FirstName, LastName, Email, Password, Nickname) VALUES ($1, $2, $3, $4, $5) RETURNING ID', [newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password, newUser.Nickname])
+    .then(result => {
+      res.status(201).json({ id: result.ID });
+    })
+    .catch(error => {
+      console.error('Error creating user:', error);
+      res.status(500).send('An error occurred');
+    });
 });
 
-app.delete('/api/records/:id', (req, res) => {
-  const id = req.params.id;
-  const index = records.findIndex(record => record.id === id);
-  if (index !== -1) {
-    records.splice(index, 1);
-    res.sendStatus(204); 
-  } else {
-    res.sendStatus(404); 
-  }
+app.get('/api/posts', (req, res) => {
+  db.any('SELECT * FROM Posts')
+    .then(data => {
+      res.json(data);
+    })
+    .catch(error => {
+      console.error('Error retrieving posts:', error);
+      res.status(500).send('An error occurred');
+    });
 });
 
-app.put('/api/records/:id', (req, res) => {
-  const id = req.params.id;
-  const updatedRecord = req.body;
-  const index = records.findIndex(record => record.id === id);
-  if (index !== -1) {
-    records[index] = { ...records[index], ...updatedRecord };
-    res.sendStatus(204); 
-  } else {
-    res.sendStatus(404);
-  }
+app.post('/api/posts', (req, res) => {
+  const newPost = req.body;
+  db.one('INSERT INTO Posts (User_ID, Title, Content, CreationDate) VALUES ($1, $2, $3, $4) RETURNING ID', [newPost.User_ID, newPost.Title, newPost.Content, newPost.CreationDate])
+    .then(result => {
+      res.status(201).json({ id: result.ID });
+    })
+  .catch(error => {
+      console.error('Error creating post:', error);
+      res.status(500).send('An error occurred');
+    });
 });
-
+    
+app.delete('/api/posts/:id', (req, res) => {
+    const id = req.params.id;
+    db.result('DELETE FROM Posts WHERE ID = $1', id)
+    .then(result => {
+    if (result.rowCount === 1) {
+      res.sendStatus(204);
+    } else {
+      res.sendStatus(404);
+    }
+    })
+    .catch(error => {
+      console.error('Error deleting post:', error);
+      res.status(500).send('An error occurred');
+    });
+});
+      
+app.put('/api/posts/:id', (req, res) => {
+    const id = req.params.id;
+    const updatedPost = req.body;
+    db.result('UPDATE Posts SET User_ID = $1, Title = $2, Content = $3, CreationDate = $4 WHERE ID = $5', [updatedPost.User_ID, updatedPost.Title, updatedPost.Content, updatedPost.CreationDate, id])
+    .then(result => {
+    if (result.rowCount === 1) {
+      res.sendStatus(204);
+    } else {
+      res.sendStatus(404);
+    }
+    })
+    .catch(error => {
+      console.error('Error updating post:', error);
+      res.status(500).send('An error occurred');
+    });
+});
+      
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+      console.log(`Example app listening on port ${port}`);
 });
