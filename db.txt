@@ -30,3 +30,10 @@ INSERT INTO Posts (User_ID, Title, Content, CreationDate) VALUES
   (2, 'New article', 'Check out my blog.', '2023-05-03'),
   (3, 'Exciting discovery', 'I found something amazing!', '2023-05-04'),
   (2, 'News update', 'Latest news from around the world.', '2023-05-05');
+
+
+alter table public.posts
+add constraint user_id_fkey
+foreign key (user_id)
+references Users(ID)
+on delete cascade;

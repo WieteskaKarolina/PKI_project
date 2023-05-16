@@ -77,6 +77,22 @@ app.get('/api/users', (req, res) => {
     });
 });
 
+app.get('/api/users/:id', (req, res) => {
+  const id = req.params.id;
+  db.oneOrNone('SELECT * FROM Users WHERE ID = $1', id)
+    .then(user => {
+      if (user) {
+        res.json(user);
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch(error => {
+      console.error('Error retrieving user:', error);
+      res.status(500).send('An error occurred');
+    });
+});
+
 app.delete('/api/users/:id', (req, res) => {
   const id = req.params.id;
   db.result('DELETE FROM Users WHERE ID = $1', id)
