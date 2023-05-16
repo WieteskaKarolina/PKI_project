@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Table Content</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Table: Posts</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let i = 0; i < tableData.length; i++) { %>
+          <tr>
+            <td><%= tableData[i].title %></td>
+            <td><%= tableData[i].author %></td>
+            <td><%= tableData[i].date %></td>
+            <td>
+              <button type="button" class="btn btn-primary btn-edit" data-id="<%= tableData[i].id %>">Edit</button>
+              <button type="button" class="btn btn-danger btn-delete" data-id="<%= tableData[i].id %>">Delete</button>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-success btn-add">Add Post</button>
+  </div>
+  <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="form-record">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-form-label">Add Post</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="input-title">Title</label>
+              <input type="text" class="form-control" id="input-title" name="title" required>
+            </div>
+            <div class="form-group">
+              <label for="input-author">Author</label>
+              <input type="text" class="form-control" id="input-author" name="author" required>
+            </div>
+            <div class="form-group">
+              <label for="input-date">Date</label>
+              <input type="date" class="form-control" id="input-date" name="date" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="hidden" id="input-record-id" name="id">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    function populateTable() {
+      $.ajax({
+        url: '/api/posts',
+        method: 'GET',
+        success: function(data) {
+          $('tbody').empty();
+
+          data.forEach(function(record) {
+            var row = $('<tr>');
+            row.append('<td>' + record.title + '</td>');
+            row.append('<td>' + record.author + '</td>');
+            row.append('<td>' + record.date + '</td>');
+            row.append('<td><button type="button" class="btn btn-primary btn-edit" data-id="' + record.id + '">Edit</button> <button type="button" class="btn btn-danger btn-delete" data-id="' + record.id + '">Delete</button></td>');
+            $('tbody').append(row);
+          });
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
+    function addRecord(data) {
+      $.ajax({
+        url: '/api/posts',
+        method: 'POST',
+        data: data,
+        success: function() {
+          $('#modal-form').modal('hide');
+          populateTable();
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
+    function deleteRecord(id) {
+      $.ajax({
+        url: '/api/posts/' + id,
+        method: 'DELETE',
+        success: function() {
+          populateTable();
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
+    function updateRecord(id, data) {
+      $.ajax({
+        url: '/api/posts/' + id,
+        method: 'PUT',
+        data: data,
+        success: function() {
+          $('#modal-form').modal('hide');
+          populateTable();
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
+    $(document).ready(function() {
+      populateTable();
+
+      $('.btn-add').click(function() {
+        $('#modal-form').modal('show');
+        $('#form-record').trigger('reset');
+        $('#modal-form-label').text('Add Post');
+        $('#input-record-id').val('');
+      });
+
+      $(document).on('click', '.btn-edit', function() {
+        var id = $(this).data('id');
+        $('#modal-form').modal('show');
+        $('#modal-form-label').text('Edit Post');
+
+        $.ajax({
+          url: '/api/posts/' + id,
+          method: 'GET',
+          success: function(data) {
+            $('#input-record-id').val(id); // Update the hidden input field with the ID
+            $('#input-title').val(data.title);
+            $('#input-author').val(data.author);
+            $('#input-date').val(data.date);
+            // Update the form action URL
+            $('#form-record').attr('action', '/api/posts/' + id);
+          },
+          error: function(error) {
+            console.log(error);
+          }
+        });
+      });
+
+      // Add event handler for form submission
+      $('#form-record').submit(function(event) {
+        event.preventDefault();
+
+        var id = $('#input-record-id').val();
+        var data = {
+          title: $('#input-title').val(),
+          author: $('#input-author').val(),
+          date: $('#input-date').val()
+        };
+
+        if (id) {
+          // Update existing record
+          updateRecord(id, data);
+        } else {
+          // Add new record
+          addRecord(data);
+        }
+      });
+
+      $(document).on('click', '.btn-delete', function() {
+        var id = $(this).data('id');
+        deleteRecord(id);
+      });
+    });
+  </script>
+</body>
+</html>
+
