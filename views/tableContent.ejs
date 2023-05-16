@@ -46,6 +46,7 @@
             <!-- Add the input fields for the record fields of the respective table -->
           </div>
           <div class="modal-footer">
+            <input type="hidden" id="input-record-id" name="record_id">
             <button type="submit" class="btn btn-primary">Save</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
@@ -63,25 +64,24 @@
         method: 'GET',
         success: function(data) {
           $('tbody').empty();
-      
-      data.forEach(function(record) {
-        var row = $('<tr>');
-        for (var key in record) {
-          if (record.hasOwnProperty(key)) {
-            var cell = $('<td>').text(record[key]);
-            row.append(cell);
-          }
-        }
-        row.append('<td><button type="button" class="btn btn-primary btn-edit" data-id="' + record.ID + '">Edit</button> <button type="button" class="btn btn-danger btn-delete" data-id="' + record.ID + '">Delete</button></td>');
-        $('tbody').append(row);
-      });
-    },
-    error: function(error) {
-      console.log(error);
-    }
-  });
-}
 
+          data.forEach(function(record) {
+            var row = $('<tr>');
+            for (var key in record) {
+              if (record.hasOwnProperty(key) && key !== 'ID') {
+                var cell = $('<td>').text(record[key]);
+                row.append(cell);
+              }
+            }
+            row.append('<td><button type="button" class="btn btn-primary btn-edit" data-id="' + record.ID + '">Edit</button> <button type="button" class="btn btn-danger btn-delete" data-id="' + record.ID + '">Delete</button></td>');
+            $('tbody').append(row);
+            });
+            },
+            error: function(error) {
+            console.log(error);
+            }
+            });
+}
 function addRecord(data) {
   $.ajax({
     url: '/api/users', // Change the URL to '/api/users' for the "Users" table
@@ -132,12 +132,14 @@ $(document).ready(function() {
     $('#modal-form').modal('show');
     $('#form-record').trigger('reset');
     $('#modal-form-label').text('Add Record');
+    $('#input-record-id').val('');
   });
 
   $(document).on('click', '.btn-edit', function() {
     var id = $(this).data('id');
     $('#modal-form').modal('show');
     $('#modal-form-label').text('Edit Record');
+    $('#input-record-id').val(id);
 
     $.ajax({
       url: '/api/users/' + id, // Change the URL to '/api/users/' + id for the "Users" table
@@ -155,7 +157,7 @@ $(document).ready(function() {
   $('#form-record').submit(function(event) {
     event.preventDefault();
     var formData = $(this).serialize();
-    var id = $(this).data('id');
+    var id = $('#input-record-id').val();
 
     if (id) {
       updateRecord(id, formData);
