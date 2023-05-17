@@ -17,6 +17,9 @@ router.post("/", (req, res) => {
     res.redirect('/');
   } else {
     notifier.notify('Incorrect password or admin name');
+    const isAdmin = false;
+    res.cookie('isAdmin', isAdmin);
+    res.redirect('/login');
   }
 });
 
