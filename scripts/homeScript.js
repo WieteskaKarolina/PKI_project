@@ -25,7 +25,6 @@ $(document).ready(function() {
       var sortColumnOptions = "";
       var filterColumnOptions = "";
 
-      // Populate the options for Sort Column and Filter Column
       for (var table in tableColumns) {
         var columns = tableColumns[table];
         for (var i = 0; i < columns.length; i++) {
@@ -40,7 +39,6 @@ $(document).ready(function() {
         }
       }
 
-      // Append the options to the respective dropdown lists
       $("#sortColumn").html(sortColumnOptions);
       $("#filterColumn").html(filterColumnOptions);
     }

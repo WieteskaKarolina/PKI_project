@@ -6,10 +6,10 @@ const port = 3000;
 const pgp = require('pg-promise')();
 const db = pgp(process.env.DATABASE_URL);
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/scripts'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.set('view engine', 'ejs');
-app.set('views', __dirname + '/public');
+app.set('views', __dirname + '/views');
 
 
 app.get('/tableList', (req, res) => {
@@ -27,7 +27,7 @@ app.get('/tableList', (req, res) => {
 app.get('/tableColumns', (req, res) => {
   const tableColumns = {
     Users: ['', 'ID', 'FirstName', 'LastName', 'Email', 'Password', 'Nickname'],
-    Posts: ['', 'ID', 'User_ID', 'Title', 'Content', 'CreationDate']
+    Posts: ['ID', 'User_ID', 'Title', 'Content', 'CreationDate']
   };
 
   res.json(tableColumns);
@@ -115,7 +115,7 @@ app.get('/api/columns/:table', (req, res) => {
     });
 });
 
-
+//USERS
 app.post('/api/users', (req, res) => {
   const newUser = req.body;
   db.one('INSERT INTO Users (firstname, lastname, email, password, nickname) VALUES ($1, $2, $3, $4, $5) RETURNING ID', [newUser.firstname, newUser.lastname, newUser.email, newUser.password, newUser.nickname])
@@ -187,6 +187,7 @@ app.put('/api/users/:id', (req, res) => {
     });
 });
 
+//POSTS
 app.get('/api/posts', (req, res) => {
   Promise.all([
     db.any('SELECT Posts.*, Users.FirstName FROM Posts JOIN Users ON Posts.User_ID = Users.ID'),
@@ -202,9 +203,6 @@ app.get('/api/posts', (req, res) => {
 });
 
 
-
-
-// GET a specific post by ID
 app.get('/api/posts/:id', (req, res) => {
   const id = req.params.id;
   db.one(`
@@ -222,7 +220,6 @@ app.get('/api/posts/:id', (req, res) => {
     });
 });
 
-// POST a new post
 app.post('/api/posts', (req, res) => {
   const newPost = req.body;
   db.one('INSERT INTO Posts (User_ID, Title, Content, CreationDate) VALUES ($1, $2, $3, $4) RETURNING ID', [newPost.author, newPost.title, newPost.content, newPost.date])
@@ -235,7 +232,6 @@ app.post('/api/posts', (req, res) => {
     });
 });
 
-// PUT (update) an existing post
 app.put('/api/posts/:id', (req, res) => {
   const id = req.params.id;
   const updatedPost = req.body;
@@ -253,7 +249,6 @@ app.put('/api/posts/:id', (req, res) => {
     });
 });
 
-// DELETE a post
 app.delete('/api/posts/:id', (req, res) => {
   const id = req.params.id;
   db.result('DELETE FROM Posts WHERE ID = $1', id)
