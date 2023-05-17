@@ -3,7 +3,7 @@
  
  ## Demo
 
- [link to deployed the app](https://pki-project.onrender.com)
+ [link to deployed app](https://pki-project.onrender.com)
  
  ## Environment Variables
 
