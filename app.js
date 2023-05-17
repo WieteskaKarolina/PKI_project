@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const app = express();
 const port = 3000;
 const routertableManage = require('./routers/tableManage');
@@ -7,8 +8,7 @@ const routerLogin= require('./routers/login');
 const pgp = require('pg-promise')();
 const db = pgp(process.env.DATABASE_URL);
 
-const isAdmin = false;
-
+app.use(cookieParser());
 app.use(express.static(__dirname + '/scripts'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.set('view engine', 'ejs');
@@ -69,6 +69,7 @@ app.get('/tableContent', (req, res) => {
 
 
 app.get('/', (req, res) => {
+  const isAdmin = req.cookies.isAdmin;
   if (isAdmin) {
     res.render('home', {
       databaseName: "pki_project_db", 
@@ -77,7 +78,6 @@ app.get('/', (req, res) => {
   } else {
     res.redirect('/login');
   }
- 
 });
 
 app.post('/executeQuery', (req, res) => {
