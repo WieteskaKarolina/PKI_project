@@ -30,11 +30,17 @@ function sendQuery() {
   var sortOrder = $('#sortOrder').val();
   var filterColumn = $('#filterColumn').val();
   var filterValue = $('#filterValue').val();
-  
+
   $.ajax({
     url: "/executeQuery",
     method: "POST",
-    data: { query: query },
+    data: {
+      query: query,
+      sortColumn: sortColumn,
+      sortOrder: sortOrder,
+      filterColumn: filterColumn,
+      filterValue: filterValue
+    },
     success: function(response) {
       $('#resultContainer').empty();
 
