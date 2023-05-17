@@ -73,8 +73,7 @@ app.get('/', (req, res) => {
   if (isAdmin) {
     res.render('home', {
       databaseName: "pki_project_db", 
-      tableList: [] ,
-      isAdmin : isAdmin
+      tableList: [] 
     });
   } else {
     res.redirect('/login');
