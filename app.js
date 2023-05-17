@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = 3000;
 const routertableManage = require('./routers/tableManage');
+const routerLogin= require('./routers/login');
 const pgp = require('pg-promise')();
 const db = pgp(process.env.DATABASE_URL);
 
@@ -12,6 +13,7 @@ app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
 app.use('/tableManage', routertableManage);
+app.use('/login', routerLogin);
 
 app.get('/tableList', (req, res) => {
   db.any("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'")
@@ -65,10 +67,15 @@ app.get('/tableContent', (req, res) => {
 
 
 app.get('/', (req, res) => {
-  res.render('home', {
-    databaseName: "pki_project_db", 
-    tableList: [] 
-  });
+  if (req.session.isAdmin) {
+    res.render('home', {
+      databaseName: "pki_project_db", 
+      tableList: [] 
+    });
+  } else {
+    res.redirect('/login');
+  }
+ 
 });
 
 app.post('/executeQuery', (req, res) => {
