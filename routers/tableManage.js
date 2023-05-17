@@ -2,6 +2,7 @@ var express = require('express');
 const router = express.Router();
 const pgp = require('pg-promise')();
 const db = pgp(process.env.DATABASE_URL);
+const crypto = require('crypto');
 
 router.get('/columns/:table', (req, res) => {
     const tableName = req.params.table;
@@ -22,7 +23,9 @@ router.get('/columns/:table', (req, res) => {
 //USERS
 router.post('/users', (req, res) => {
     const newUser = req.body;
-    db.one('INSERT INTO Users (firstname, lastname, email, password, nickname) VALUES ($1, $2, $3, $4, $5) RETURNING ID', [newUser.firstname, newUser.lastname, newUser.email, newUser.password, newUser.nickname])
+    const password = crypto.createHash('md5').update(newUser.password).digest('hex');
+
+    db.one('INSERT INTO Users (firstname, lastname, email, password, nickname) VALUES ($1, $2, $3, $4, $5) RETURNING ID', [newUser.firstname, newUser.lastname, newUser.email, password, newUser.nickname])
       .then(result => {
         res.status(201).json({ id: result.ID });
       })
@@ -78,7 +81,9 @@ router.post('/users', (req, res) => {
   router.put('/users/:id', (req, res) => {
     const id = req.params.id;
     const updatedUser = req.body;
-    db.result('UPDATE Users SET firstname = $1, lastname = $2, email = $3, password = $4, nickname = $5 WHERE ID = $6', [updatedUser.firstname, updatedUser.lastname, updatedUser.email, updatedUser.password, updatedUser.nickname, id])
+    const password = crypto.createHash('md5').update(updatedUser.password).digest('hex');
+
+    db.result('UPDATE Users SET firstname = $1, lastname = $2, email = $3, password = $4, nickname = $5 WHERE ID = $6', [updatedUser.firstname, updatedUser.lastname, updatedUser.email, password, updatedUser.nickname, id])
       .then(result => {
         if (result.rowCount === 1) {
           res.sendStatus(204);
