@@ -1,6 +1,6 @@
 var express = require('express');
 const router = express.Router();
-
+const notifier = require('node-notifier');
 
 const adminUsername = "admin";
 const adminPassword = "admin132";
@@ -16,7 +16,7 @@ router.post("/", (req, res) => {
     res.cookie('isAdmin', isAdmin);
     res.redirect('/');
   } else {
-    window.alert("Incorrect password or admin name");
+    notifier.notify('Incorrect password or admin name');
   }
 });
 
