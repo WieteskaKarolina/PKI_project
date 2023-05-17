@@ -13,7 +13,7 @@ router.post("/", (req, res) => {
   const { username, password } = req.body;
   if (username === adminUsername && password === adminPassword) {
     req.session.isAdmin = true; 
-    res.redirect('/');
+    res.redirect('..');
   } else {
     res.sendStatus(401);
   }
