@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Table Content</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Posts</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+    <h1>Table: Posts</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Date</th>
+          <th>Content</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let i = 0; i < tableData.length; i++) { %>
+          <tr>
+            <td><%= tableData[i].title %></td>
+            <td><%= tableData[i].firstname %></td>
+            <td><%= tableData[i].creationdate %></td>
+            <td><%= tableData[i].content %></td>
+            <td>
+              <button type="button" class="btn btn-primary btn-edit" data-id="<%= tableData[i].id %>">Edit</button>
+              <button type="button" class="btn btn-danger btn-delete" data-id="<%= tableData[i].id %>">Delete</button>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-success btn-add">Add Record</button>
+  </div>
+  <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="form-record">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-form-label">Add Record</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="input-title">Title</label>
+              <input type="text" class="form-control" id="input-title" name="title" required>
+            </div>
+            <div class="form-group">
+              <label for="input-author">Author</label>
+              <select class="form-control" id="input-author" name="author" required>
+                <% for (let i = 0; i < users.length; i++) { %>
+                  <option value="<%= users[i].id %>"><%= users[i].firstname %></option>
+                <% } %>
+              </select>
+            </div>
+            <div class="form-group">
+                <label for="input-date">Date</label>
+                <input type="text" class="form-control datepicker" id="input-date" name="date" required>
+              </div>              
+            <div class="form-group">
+              <label for="input-content">Content</label>
+              <textarea class="form-control" id="input-content" name="content" required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="hidden" id="input-record-id" name="id">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </form>
+            </div>
+            </div>
+            
+              </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="tableContentPosts.js"></script>
+</body>
+</html>
+
