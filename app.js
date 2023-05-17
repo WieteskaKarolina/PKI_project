@@ -87,6 +87,8 @@ app.post('/executeQuery', (req, res) => {
     modifiedQuery += ` ORDER BY ${sortColumn} ${sortOrder}`;
   }
 
+  console.log(`modifiedQuery: ${modifiedQuery}`);
+
   db.query(modifiedQuery)
     .then((result) => {
       res.json({ result: result });
