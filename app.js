@@ -63,7 +63,22 @@ app.get('/', (req, res) => {
 
 app.post('/executeQuery', (req, res) => {
   const query = req.body.query;
-  db.query(query)
+  const sortColumn = req.body.sortColumn || ''; // Sorting column received from the client
+  const sortOrder = req.body.sortOrder || ''; // Sorting order received from the client
+  const filterColumn = req.body.filterColumn || ''; // Filtering column received from the client
+  const filterValue = req.body.filterValue || ''; // Filtering value received from the client
+
+  let modifiedQuery = query;
+
+  if (filterColumn && filterValue) {
+    modifiedQuery += ` WHERE ${filterColumn} = '${filterValue}'`; // Modify the filter condition based on your requirements
+  }
+
+  if (sortColumn && sortOrder) {
+    modifiedQuery += ` ORDER BY ${sortColumn} ${sortOrder}`; // Modify the sort order based on your requirements
+  }
+
+  db.query(modifiedQuery)
     .then((result) => {
       res.json({ result: result });
     })
@@ -71,6 +86,7 @@ app.post('/executeQuery', (req, res) => {
       res.json({ error: error.message });
     });
 });
+
 
 app.get('/api/columns/:table', (req, res) => {
   const tableName = req.params.table;

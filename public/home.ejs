@@ -37,10 +37,29 @@
             <label for="sqlQuery">SQL Query:</label>
             <textarea class="form-control" id="sqlQuery" rows="5"></textarea>
           </div>
+          <div class="form-group">
+            <label for="sortColumn">Sort Column:</label>
+            <input type="text" class="form-control" id="sortColumn">
+          </div>
+          <div class="form-group">
+            <label for="sortOrder">Sort Order:</label>
+            <select class="form-control" id="sortOrder">
+              <option value="ASC">Ascending</option>
+              <option value="DESC">Descending</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filterColumn">Filter Column:</label>
+            <input type="text" class="form-control" id="filterColumn">
+          </div>
+          <div class="form-group">
+            <label for="filterValue">Filter Value:</label>
+            <input type="text" class="form-control" id="filterValue">
+          </div>
           <button type="button" class="btn btn-primary" onclick="sendQuery()">Send Query</button>
         </form>
       </div>
-    </div>
+
 
     <div id="resultContainer" class="mt-5"></div>
   </div>

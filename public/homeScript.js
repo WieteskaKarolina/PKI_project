@@ -26,6 +26,11 @@ function showTableContent() {
 
 function sendQuery() {
   var query = $('#sqlQuery').val();
+  var sortColumn = $('#sortColumn').val();
+  var sortOrder = $('#sortOrder').val();
+  var filterColumn = $('#filterColumn').val();
+  var filterValue = $('#filterValue').val();
+  
   $.ajax({
     url: "/executeQuery",
     method: "POST",
