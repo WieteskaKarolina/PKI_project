@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 const app = express();
 const port = 3000;
 
@@ -9,6 +10,7 @@ const db = pgp(process.env.DATABASE_URL);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
+app.use(express.static(path.join(__dirname, 'scripts'), { 'Content-Type': 'text/javascript' }));
 
 
 app.get('/tableList', (req, res) => {
