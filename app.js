@@ -5,8 +5,7 @@ const app = express();
 const port = 3000;
 const routertableManage = require('./routers/tableManage');
 const routerLogin= require('./routers/login');
-const pgp = require('pg-promise')();
-const db = pgp(process.env.DATABASE_URL);
+const db = require('./db');
 
 app.use(cookieParser());
 app.use(express.static(__dirname + '/scripts'));

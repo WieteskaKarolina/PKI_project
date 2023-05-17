@@ -1,7 +1,6 @@
 var express = require('express');
 const router = express.Router();
-const pgp = require('pg-promise')();
-const db = pgp(process.env.DATABASE_URL);
+const db = require('./db');
 const crypto = require('crypto');
 
 router.get('/columns/:table', (req, res) => {

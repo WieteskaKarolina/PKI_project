@@ -32,7 +32,19 @@
   </div>
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const isInvalid = urlParams.get('invalid');
+
+    if (isInvalid) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid credentials',
+        text: 'The username or password is incorrect.',
+      });
+    }
+  </script>
 </body>
 
 </html>
