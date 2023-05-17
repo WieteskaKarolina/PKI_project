@@ -1,6 +1,6 @@
 var express = require('express');
 const router = express.Router();
-const db = require('./db');
+const db = require('../db');
 const crypto = require('crypto');
 
 router.get('/columns/:table', (req, res) => {
