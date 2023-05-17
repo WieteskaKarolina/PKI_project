@@ -24,10 +24,10 @@
             <input type="text" class="form-control" id="databaseName" readonly value="<%= databaseName %>">
           </div>
           <div class="form-group">
-            <label for="tableList">Dostępne tabele:</label>
+            <label for="tableList">Available Tables:</label>
             <select class="form-control" id="tableList"></select>
           </div>
-          <button type="button" class="btn btn-primary" onclick="showTableContent()">Pokaż zawartość tabeli</button>
+          <button type="button" class="btn btn-primary" onclick="showTableContent()">Show Table Content</button>
         </form>
       </div>
 
@@ -37,7 +37,7 @@
             <label for="sqlQuery">SQL Query:</label>
             <textarea class="form-control" id="sqlQuery" rows="5"></textarea>
           </div>
-          <button type="button" class="btn btn-primary" onclick="sendQuery()">Wyślij zapytanie</button>
+          <button type="button" class="btn btn-primary" onclick="sendQuery()">Send Query</button>
         </form>
       </div>
     </div>
@@ -89,38 +89,38 @@
               var result = response.result;
 
               if (result.length === 0) {
-                $('#resultContainer').html('<div class="alert alert-info">No records found.</div>');
+                $('#resultContainer').html
+                ('<div class="alert alert-info">No records found.</div>');
               } else {
-                var table = $('<table class="table table-bordered">');
-
+              var table = $('<table class="table table-bordered">');
                 var thead = $('<thead>');
-                var headerRow = $('<tr>');
-                var headers = Object.keys(result[0]);
-                for (var i = 0; i < headers.length; i++) {
-                  headerRow.append('<th>' + headers[i] + '</th>');
-                }
-                thead.append(headerRow);
-                table.append(thead);
-
-                var tbody = $('<tbody>');
-                for (var j = 0; j < result.length; j++) {
-                  var dataRow = $('<tr>');
-                  for (var k = 0; k < headers.length; k++) {
-                    dataRow.append('<td>' + result[j][headers[k]] + '</td>');
-                  }
-                  tbody.append(dataRow);
-                }
-                table.append(tbody);
-
-                $('#resultContainer').append(table);
-              }
+            var headerRow = $('<tr>');
+            var headers = Object.keys(result[0]);
+            for (var i = 0; i < headers.length; i++) {
+              headerRow.append('<th>' + headers[i] + '</th>');
             }
-          },
-          error: function(xhr, status, error) {
-            $('#resultContainer').html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+            thead.append(headerRow);
+            table.append(thead);
+
+            var tbody = $('<tbody>');
+            for (var j = 0; j < result.length; j++) {
+              var dataRow = $('<tr>');
+              for (var k = 0; k < headers.length; k++) {
+                dataRow.append('<td>' + result[j][headers[k]] + '</td>');
+              }
+              tbody.append(dataRow);
+            }
+            table.append(tbody);
+
+            $('#resultContainer').append(table);
           }
-        });
+        }
+      },
+      error: function(xhr, status, error) {
+        $('#resultContainer').html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
       }
+    });
+  }
 </script>
 </body>
 </html>

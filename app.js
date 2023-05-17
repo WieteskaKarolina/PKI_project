@@ -70,6 +70,22 @@ app.post('/executeQuery', (req, res) => {
     });
 });
 
+app.get('/api/columns/:table', (req, res) => {
+  const tableName = req.params.table;
+  db.any(`
+    SELECT column_name, data_type
+    FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = $1
+  `, tableName)
+    .then(columns => {
+      res.json(columns);
+    })
+    .catch(error => {
+      console.error('Error retrieving columns:', error);
+      res.status(500).send('An error occurred');
+    });
+});
+
 
 app.post('/api/users', (req, res) => {
   const newUser = req.body;
@@ -162,7 +178,12 @@ app.get('/api/posts', (req, res) => {
 // GET a specific post by ID
 app.get('/api/posts/:id', (req, res) => {
   const id = req.params.id;
-  db.one('SELECT * FROM Posts WHERE ID = $1', id)
+  db.one(`
+    SELECT Posts.*, Users.FirstName
+    FROM Posts
+    JOIN Users ON Posts.User_ID = Users.ID
+    WHERE Posts.ID = $1
+  `, id)
     .then(post => {
       res.json(post);
     })
