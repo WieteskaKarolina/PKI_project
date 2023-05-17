@@ -2,7 +2,7 @@ var express = require('express');
 const router = express.Router();
 
 
-app.get('/columns/:table', (req, res) => {
+router.get('/columns/:table', (req, res) => {
     const tableName = req.params.table;
     db.any(`
       SELECT column_name, data_type
@@ -19,7 +19,7 @@ app.get('/columns/:table', (req, res) => {
   });
 
 //USERS
-app.post('/users', (req, res) => {
+router.post('/users', (req, res) => {
     const newUser = req.body;
     db.one('INSERT INTO Users (firstname, lastname, email, password, nickname) VALUES ($1, $2, $3, $4, $5) RETURNING ID', [newUser.firstname, newUser.lastname, newUser.email, newUser.password, newUser.nickname])
       .then(result => {
@@ -31,7 +31,7 @@ app.post('/users', (req, res) => {
       });
   });
   
-  app.get('/users', (req, res) => {
+  router.get('/users', (req, res) => {
     db.any('SELECT * FROM Users')
       .then(data => {
         res.json(data);
@@ -42,7 +42,7 @@ app.post('/users', (req, res) => {
       });
   });
   
-  app.get('/users/:id', (req, res) => {
+  router.get('/users/:id', (req, res) => {
     const id = req.params.id;
     db.oneOrNone('SELECT * FROM Users WHERE ID = $1', id)
       .then(user => {
@@ -58,7 +58,7 @@ app.post('/users', (req, res) => {
       });
   });
   
-  app.delete('/users/:id', (req, res) => {
+  router.delete('/users/:id', (req, res) => {
     const id = req.params.id;
     db.result('DELETE FROM Users WHERE ID = $1', id)
       .then(result => {
@@ -73,7 +73,8 @@ app.post('/users', (req, res) => {
         res.status(500).send('An error occurred');
       });
   });
-  app.put('/users/:id', (req, res) => {
+
+  router.put('/users/:id', (req, res) => {
     const id = req.params.id;
     const updatedUser = req.body;
     db.result('UPDATE Users SET firstname = $1, lastname = $2, email = $3, password = $4, nickname = $5 WHERE ID = $6', [updatedUser.firstname, updatedUser.lastname, updatedUser.email, updatedUser.password, updatedUser.nickname, id])
@@ -91,7 +92,7 @@ app.post('/users', (req, res) => {
   });
   
   //POSTS
-  app.get('/posts', (req, res) => {
+  router.get('/posts', (req, res) => {
     Promise.all([
       db.any('SELECT Posts.*, Users.FirstName FROM Posts JOIN Users ON Posts.User_ID = Users.ID'),
       db.any('SELECT ID, FirstName FROM Users')
@@ -106,7 +107,7 @@ app.post('/users', (req, res) => {
   });
   
   
-  app.get('/posts/:id', (req, res) => {
+  router.get('/posts/:id', (req, res) => {
     const id = req.params.id;
     db.one(`
       SELECT Posts.*, Users.FirstName
@@ -123,7 +124,7 @@ app.post('/users', (req, res) => {
       });
   });
   
-  app.post('/posts', (req, res) => {
+  router.post('/posts', (req, res) => {
     const newPost = req.body;
     db.one('INSERT INTO Posts (User_ID, Title, Content, CreationDate) VALUES ($1, $2, $3, $4) RETURNING ID', [newPost.author, newPost.title, newPost.content, newPost.date])
       .then(result => {
@@ -135,7 +136,7 @@ app.post('/users', (req, res) => {
       });
   });
   
-  app.put('/posts/:id', (req, res) => {
+  router.put('/posts/:id', (req, res) => {
     const id = req.params.id;
     const updatedPost = req.body;
     db.result('UPDATE Posts SET User_ID = $1, Title = $2, Content = $3, CreationDate = $4 WHERE ID = $5', [updatedPost.author, updatedPost.title, updatedPost.content, updatedPost.date, id])
@@ -152,7 +153,7 @@ app.post('/users', (req, res) => {
       });
   });
   
-  app.delete('/posts/:id', (req, res) => {
+  router.delete('/posts/:id', (req, res) => {
     const id = req.params.id;
     db.result('DELETE FROM Posts WHERE ID = $1', id)
       .then(result => {
