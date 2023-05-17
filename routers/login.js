@@ -5,7 +5,7 @@ const router = express.Router();
 const adminUsername = "admin";
 const adminPassword = "admin132";
 
-router.get('/login', (req, res) => {
+router.get('/', (req, res) => {
     res.render('login');
 });
 
@@ -13,7 +13,7 @@ router.post("/", (req, res) => {
   const { username, password } = req.body;
   if (username === adminUsername && password === adminPassword) {
     req.session.isAdmin = true; 
-    res.sendStatus(200);
+    res.redirect('/');
   } else {
     res.sendStatus(401);
   }

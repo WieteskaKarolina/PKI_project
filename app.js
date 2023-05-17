@@ -7,6 +7,8 @@ const routerLogin= require('./routers/login');
 const pgp = require('pg-promise')();
 const db = pgp(process.env.DATABASE_URL);
 
+const isAdmin = false;
+
 app.use(express.static(__dirname + '/scripts'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.set('view engine', 'ejs');
@@ -67,7 +69,7 @@ app.get('/tableContent', (req, res) => {
 
 
 app.get('/', (req, res) => {
-  if (req.session.isAdmin) {
+  if (isAdmin) {
     res.render('home', {
       databaseName: "pki_project_db", 
       tableList: [] 
