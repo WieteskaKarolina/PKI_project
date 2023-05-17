@@ -80,6 +80,12 @@ app.get('/', (req, res) => {
   }
 });
 
+app.get('/logout', (req, res) => {
+  res.cookie('isAdmin', false);
+  res.redirect('/login');
+});
+
+
 app.post('/executeQuery', (req, res) => {
   const query = req.body.query;
   const sortColumn = req.body.sortColumn || '';
