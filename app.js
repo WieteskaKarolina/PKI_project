@@ -9,6 +9,7 @@ const db = pgp(process.env.DATABASE_URL);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
+app.use(express.static(path.join(__dirname, 'scripts')));
 
 app.get('/tableList', (req, res) => {
   db.any("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'")
