@@ -105,6 +105,15 @@ $(document).on('click', '.btn-edit', function() {
     });
 });
 
+app.get('/tableColumns', (req, res) => {
+    const tableColumns = {
+      Users: ['ID', 'FirstName', 'LastName', 'Email', 'Password', 'Nickname'],
+      Posts: ['ID', 'User_ID', 'Title', 'Content', 'CreationDate']
+    };
+  
+    res.json(tableColumns);
+  });
+  
 // Add event handler for form submission
 $('#form-record').submit(function(event) {
     event.preventDefault();

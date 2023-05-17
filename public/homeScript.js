@@ -17,6 +17,28 @@ $(document).ready(function() {
       $("#tableList").html(selectOptions);
     }
   });
+
+  $.ajax({
+    url: "/tableColumns",
+    success: function(response) {
+      var tableColumns = response;
+      var sortColumnOptions = "";
+      var filterColumnOptions = "";
+
+      // Populate the options for Sort Column and Filter Column
+      for (var table in tableColumns) {
+        var columns = tableColumns[table];
+        for (var i = 0; i < columns.length; i++) {
+          sortColumnOptions += "<option value='" + table + "." + columns[i] + "'>" + table + "." + columns[i] + "</option>";
+          filterColumnOptions += "<option value='" + table + "." + columns[i] + "'>" + table + "." + columns[i] + "</option>";
+        }
+      }
+
+      // Append the options to the respective dropdown lists
+      $("#sortColumn").html(sortColumnOptions);
+      $("#filterColumn").html(filterColumnOptions);
+    }
+  });
 });
 
 function showTableContent() {
