@@ -6,10 +6,10 @@ const port = 3000;
 const pgp = require('pg-promise')();
 const db = pgp(process.env.DATABASE_URL);
 
-app.use(express.static(__dirname + '/views'));
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.set('view engine', 'ejs');
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/public');
 
 
 app.get('/tableList', (req, res) => {
