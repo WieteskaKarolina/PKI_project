@@ -12,12 +12,14 @@ router.get('/', (req, res) => {
 router.post("/", (req, res) => {
   const { username, password } = req.body;
   if (username === adminUsername && password === adminPassword) {
-    res.cookie('isAdmin', true);
-    res.redirect('..');
-  } else {
-    res.cookie('isAdmin', false);
-    alert('Incorrect password or admin name');
+    const isAdmin = true;
+    res.cookie('isAdmin', isAdmin);
     res.redirect('/');
+  } else {
+    const isAdmin = false;
+    res.cookie('isAdmin', isAdmin);
+    alert('Incorrect password or admin name');
+    res.redirect('/login');
   }
 });
 
