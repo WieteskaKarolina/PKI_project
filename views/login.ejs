@@ -28,25 +28,6 @@
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-  <script>
-    $(document).ready(function() {
-      $('#loginForm').submit(function(event) {
-        event.preventDefault();
-        const username = $('#username').val();
-        const password = $('#password').val();
-
-        $.post('/login', { username: username, password: password })
-          .done(function() {
-            Swal.fire('Success', 'Logged in as admin', 'success').then(function() {
-              window.location.href = '/admin'; 
-            });
-          })
-          .fail(function() {
-            Swal.fire('Error', 'Invalid username or password', 'error');
-          });
-      });
-    });
-  </script>
 </body>
 
 </html>
