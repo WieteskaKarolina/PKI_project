@@ -24,6 +24,15 @@ app.get('/tableList', (req, res) => {
     });
 });
 
+app.get('/tableColumns', (req, res) => {
+  const tableColumns = {
+    Users: ['ID', 'FirstName', 'LastName', 'Email', 'Password', 'Nickname'],
+    Posts: ['ID', 'User_ID', 'Title', 'Content', 'CreationDate']
+  };
+
+  res.json(tableColumns);
+});
+
 app.get('/tableContent', (req, res) => {
   const tableName = req.query.table;
 
