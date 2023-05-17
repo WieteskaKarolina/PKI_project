@@ -1,6 +1,6 @@
 function populateTable() {
     $.ajax({
-      url: '/api/posts',
+      url: '/tableManage/posts',
       method: 'GET',
       success: function(data) {
         $('tbody').empty();
@@ -24,7 +24,7 @@ function populateTable() {
 
 function addRecord(data) {
     $.ajax({
-        url: '/api/posts',
+        url: '/tableManage/posts',
         method: 'POST',
         data: data,
         success: function() {
@@ -39,7 +39,7 @@ function addRecord(data) {
 
 function deleteRecord(id) {
     $.ajax({
-        url: '/api/posts/' + id,
+        url: '/tableManage/posts/' + id,
         method: 'DELETE',
         success: function() {
             populateTable();
@@ -52,7 +52,7 @@ function deleteRecord(id) {
 
 function updateRecord(id, data) {
     $.ajax({
-        url: '/api/posts/' + id,
+        url: '/tableManage/posts/' + id,
         method: 'PUT',
         data: data,
         success: function() {
@@ -87,7 +87,7 @@ $(document).ready(function() {
         $('#modal-form-label').text('Edit Post');
 
         $.ajax({
-        url: '/api/posts/' + id,
+        url: '/tableManage/posts/' + id,
         method: 'GET',
         success: function(data) {
             $('#input-record-id').val(id); 
@@ -96,7 +96,7 @@ $(document).ready(function() {
             $('#input-date').val(data.creationdate);
             $('#input-content').val(data.content);
 
-            $('#form-record').attr('action', '/api/posts/' + id);
+            $('#form-record').attr('action', '/tableManage/posts/' + id);
             
             $('.datepicker').datepicker('setDate', data.creationdate);
         },

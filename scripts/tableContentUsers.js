@@ -1,6 +1,6 @@
 function populateTable() {
   $.ajax({
-    url: '/api/users',
+    url: '/tableManage/users',
     method: 'GET',
     success: function(data) {
       $('tbody').empty();
@@ -26,7 +26,7 @@ function populateTable() {
 
 function addRecord(data) {
   $.ajax({
-    url: '/api/users',
+    url: '/tableManage/users',
     method: 'POST',
     data: data,
     success: function() {
@@ -41,7 +41,7 @@ function addRecord(data) {
 
 function deleteRecord(id) {
   $.ajax({
-    url: '/api/users/' + id,
+    url: '/tableManage/users/' + id,
     method: 'DELETE',
     success: function() {
       populateTable();
@@ -54,7 +54,7 @@ function deleteRecord(id) {
 
 function updateRecord(id, data) {
   $.ajax({
-    url: '/api/users/' + id,
+    url: '/tableManage/users/' + id,
     method: 'PUT',
     data: data,
     success: function() {
@@ -83,7 +83,7 @@ $(document).ready(function() {
   $('#modal-form-label').text('Edit User');
 
     $.ajax({
-      url: '/api/users/' + id,
+      url: '/tableManage/users/' + id,
       method: 'GET',
       success: function(data) {
         $('#input-record-id').val(id); 
@@ -92,7 +92,7 @@ $(document).ready(function() {
         $('#input-email').val(data.email);
         $('#input-password').val(data.password);
         $('#input-nickname').val(data.nickname);
-        $('#form-record').attr('action', '/api/users/' + id);
+        $('#form-record').attr('action', '/tableManage/users/' + id);
       },
       error: function(error) {
         console.log(error);
