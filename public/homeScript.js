@@ -29,7 +29,7 @@ $(document).ready(function() {
       for (var table in tableColumns) {
         var columns = tableColumns[table];
         for (var i = 0; i < columns.length; i++) {
-          if(columns === ''){
+          if(columns[i] === ''){
             sortColumnOptions += "<option value=''></option>";
             filterColumnOptions += "<option value=''></option>";
           }
