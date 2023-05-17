@@ -57,25 +57,25 @@ app.get('/tableContent', (req, res) => {
 app.get('/', (req, res) => {
   res.render('home', {
     databaseName: "pki_project_db", 
-    tableList: [] // Will be updated by asynchronous AJAX request
+    tableList: [] 
   });
 });
 
 app.post('/executeQuery', (req, res) => {
   const query = req.body.query;
-  const sortColumn = req.body.sortColumn || ''; // Sorting column received from the client
-  const sortOrder = req.body.sortOrder || ''; // Sorting order received from the client
-  const filterColumn = req.body.filterColumn || ''; // Filtering column received from the client
-  const filterValue = req.body.filterValue || ''; // Filtering value received from the client
+  const sortColumn = req.body.sortColumn || '';
+  const sortOrder = req.body.sortOrder || '';
+  const filterColumn = req.body.filterColumn || '';
+  const filterValue = req.body.filterValue || '';
 
   let modifiedQuery = query;
 
   if (filterColumn && filterValue) {
-    modifiedQuery += ` WHERE ${filterColumn} = '${filterValue}'`; // Modify the filter condition based on your requirements
+    modifiedQuery += ` WHERE ${filterColumn} = '${filterValue}'`;
   }
 
   if (sortColumn && sortOrder) {
-    modifiedQuery += ` ORDER BY ${sortColumn} ${sortOrder}`; // Modify the sort order based on your requirements
+    modifiedQuery += ` ORDER BY ${sortColumn} ${sortOrder}`;
   }
 
   db.query(modifiedQuery)
