@@ -1,5 +1,6 @@
 ﻿# PKI_project
  Database contains two tables: Users and Posts.
+ Project is a web service to manage the database for the site admin.
  
  ## Demo
 
