@@ -53,6 +53,19 @@ function sendQuery() {
   var filterColumn = $('#filterColumn').val();
   var filterValue = $('#filterValue').val();
 
+  if (sortColumn === '') {
+    sortColumn = null;
+  }
+  if (sortOrder === '') {
+    sortOrder = null;
+  }
+  if (filterColumn === '') {
+    filterColumn = null;
+  }
+  if (filterValue === '') {
+    filterValue = null;
+  }
+
   $.ajax({
     url: "/executeQuery",
     method: "POST",
