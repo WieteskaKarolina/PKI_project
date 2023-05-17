@@ -29,8 +29,14 @@ $(document).ready(function() {
       for (var table in tableColumns) {
         var columns = tableColumns[table];
         for (var i = 0; i < columns.length; i++) {
-          sortColumnOptions += "<option value='" + table + "." + columns[i] + "'>" + table + "." + columns[i] + "</option>";
-          filterColumnOptions += "<option value='" + table + "." + columns[i] + "'>" + table + "." + columns[i] + "</option>";
+          if(columns === ''){
+            sortColumnOptions += "<option value=''></option>";
+            filterColumnOptions += "<option value=''></option>";
+          }
+          else{
+            sortColumnOptions += "<option value='" + table + "." + columns[i] + "'>" + table + "." + columns[i] + "</option>";
+            filterColumnOptions += "<option value='" + table + "." + columns[i] + "'>" + table + "." + columns[i] + "</option>";
+          }
         }
       }
 
@@ -55,9 +61,6 @@ function sendQuery() {
 
   if (sortColumn === '') {
     sortColumn = null;
-  }
-  if (sortOrder === '') {
-    sortOrder = null;
   }
   if (filterColumn === '') {
     filterColumn = null;
