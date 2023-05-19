@@ -24,7 +24,7 @@ app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
 app.use('/tableManage', routertableManage);
-app.use('/login', routerLogin);
+app.use('/login', routerLogin({ secretKey: 'Caroline secret key' }));
 app.use('/logout', routerLogout);
 
 app.use('/', (req, res, next) => {
