@@ -1,7 +1,6 @@
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const app = express();
 const port = 3000;
 const routertableManage = require('./routers/tableManage');
@@ -10,7 +9,6 @@ const routerLogout = require('./routers/logout');
 const db = require('./db');
 
 
-app.use(cookieParser());
 app.use(express.static(__dirname + '/scripts'));
 app.use(express.urlencoded({ extended: true }));
 

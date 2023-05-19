@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const adminUsername = "admin";
-const adminPassword = "admin132";
+const adminPassword = process.env.ADMIN_PASSWORD;
 
 router.get('/', (req, res) => {
   res.render('login');
