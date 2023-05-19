@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 
 router.post("/", (req, res) => {
   const { username, password } = req.body;
-  if (username === adminUsername && bcrypt.compareSync(password, adminPasswordHash)) {
+  if (username === adminUsername && bcrypt.compareSync(password, adminPasswordHash + secretKey)) {
     req.session.isAdmin = true;
     res.redirect('/');
   } else {
