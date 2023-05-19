@@ -1,20 +1,43 @@
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const app = express();
 const port = 3000;
 const routertableManage = require('./routers/tableManage');
-const routerLogin= require('./routers/login');
+const routerLogin = require('./routers/login');
+const routerLogout = require('./routers/logout');
 const db = require('./db');
 
-app.use(cookieParser());
+
 app.use(express.static(__dirname + '/scripts'));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  session({
+    secret: 'Caroline secret key',
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
 app.use('/tableManage', routertableManage);
 app.use('/login', routerLogin);
+app.use('/logout', routerLogout);
+
+app.get('/', (req, res) => {
+  const isAdmin = req.session.isAdmin;
+  if (isAdmin) {
+    res.render('home', {
+      databaseName: "pki_project_db",
+      tableList: []
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
 
 app.get('/tableList', (req, res) => {
   db.any("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'")
@@ -64,24 +87,6 @@ app.get('/tableContent', (req, res) => {
   } else {
     res.status(404).send('Table not found');
   }
-});
-
-
-app.get('/', (req, res) => {
-  const isAdmin = req.cookies.isAdmin;
-  if (isAdmin) {
-    res.render('home', {
-      databaseName: "pki_project_db", 
-      tableList: [] 
-    });
-  } else {
-    res.redirect('/login');
-  }
-});
-
-app.get('/logout', (req, res) => {
-  res.cookie('isAdmin', false);
-  res.redirect('/login');
 });
 
 

@@ -1,8 +1,8 @@
-var express = require('express');
+const express = require('express');
 const router = express.Router();
 
 const adminUsername = "admin";
-const adminPassword = "admin132";
+const adminPassword = process.env.ADMIN_PASSWORD;
 
 router.get('/', (req, res) => {
   res.render('login');
@@ -11,8 +11,7 @@ router.get('/', (req, res) => {
 router.post("/", (req, res) => {
   const { username, password } = req.body;
   if (username === adminUsername && password === adminPassword) {
-    const isAdmin = true;
-    res.cookie('isAdmin', isAdmin);
+    req.session.isAdmin = true;
     res.redirect('/');
   } else {
     res.redirect('/login?invalid=true');
