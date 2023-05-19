@@ -5,7 +5,8 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const port = 3000;
 const routertableManage = require('./routers/tableManage');
-const routerLogin= require('./routers/login');
+const routerLogin = require('./routers/login');
+const routerLogout = require('./routers/logout');
 const db = require('./db');
 
 app.use(
