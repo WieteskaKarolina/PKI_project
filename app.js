@@ -12,7 +12,7 @@ const db = require('./db');
 
 app.use(cookieParser());
 app.use(express.static(__dirname + '/scripts'));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
