@@ -9,6 +9,11 @@ const routerLogin = require('./routers/login');
 const routerLogout = require('./routers/logout');
 const db = require('./db');
 
+
+app.use(cookieParser());
+app.use(express.static(__dirname + '/scripts'));
+app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use(
   session({
     secret: 'Caroline secret key',
@@ -17,29 +22,23 @@ app.use(
   })
 );
 
-app.use(cookieParser());
-app.use(express.static(__dirname + '/scripts'));
-app.use(bodyParser.urlencoded({ extended: false }));
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
 app.use('/tableManage', routertableManage);
-app.use('/login', routerLogin({ secretKey: 'Caroline secret key' }));
+app.use('/login', routerLogin);
 app.use('/logout', routerLogout);
 
-app.use('/', (req, res, next) => {
-  if (req.session.isAdmin) {
-    next();
+app.get('/', (req, res) => {
+  const isAdmin = req.session.isAdmin;
+  if (isAdmin) {
+    res.render('home', {
+      databaseName: "pki_project_db",
+      tableList: []
+    });
   } else {
     res.redirect('/login');
   }
-});
-
-app.get('/', (req, res) => {
-  res.render('home', {
-    databaseName: "pki_project_db",
-    tableList: []
-  });
 });
 
 app.get('/tableList', (req, res) => {
