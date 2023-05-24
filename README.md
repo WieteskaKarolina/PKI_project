@@ -2,9 +2,12 @@
  Database contains two tables: Users and Posts.
  Project is a web service to manage the database for the site admin.
  
- ## Demo
+## Deployment
 
- [link to deployed app](https://pki-project.onrender.com)
+My Awesome App has been deployed on Render.com, a powerful and user-friendly cloud platform for hosting applications. 
+It offers a seamless deployment experience and ensures high availability of our app.
+To access the deployed application, visit [this page](https://pki-project.onrender.com). 
+
  
  ## Environment Variables
 
@@ -19,6 +22,10 @@ To run app, run the following command
 ```bash
   node app.js
 ```
+
+## Database
+
+The application uses a PostgreSQL database hosted at Render.com. It provides a reliable and scalable solution for storing and managing our data.
 
 ## Structure of pki_project_db
 ```
