@@ -100,7 +100,7 @@ app.post('/executeQuery', (req, res) => {
   let modifiedQuery = query;
 
   if (filterColumn && filterValue) {
-    modifiedQuery += ` WHERE ${filterColumn} = '${filterValue}'`;
+    modifiedQuery += ` WHERE ${filterColumn} LIKE '%${filterValue}%'`;
   }
 
   if (sortColumn && sortOrder) {
